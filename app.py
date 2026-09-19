@@ -125,7 +125,8 @@ if submitted:
             model = get_working_model(client)
             response = client.chat.completions.create(
                 model=model,
-                messages=[{"role": "user", "content": PROMPT.format(content=content[:4000])}],
+                messages=[{"role": "user", "content": PROMPT.format(rubric=RISK_RUBRIC,
+content=content[:4000])}],
                 temperature=0.4,
                 max_tokens=2000
             )
