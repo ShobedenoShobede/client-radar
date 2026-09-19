@@ -14,8 +14,51 @@ st.set_page_config(
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", st.secrets.get("GROQ_API_KEY", ""))
 client = Groq(api_key=GROQ_API_KEY)
 
-PAYPAL_EMAIL = "omni.growth.venture@gmail.com"  # your email
+PAYPAL_EMAIL = "omni.growth.venture@gmail.com" 
 
+
+RISK_RUBRIC = """
+You score every client against these 22 signals. Each signal is either CLEAR, WARNING, or CRITICAL.
+
+FINANCIAL SIGNALS (Weight: 35%)
+1. Payment terms — Net-60 or worse = WARNING. Net-90 or "upon completion" = CRITICAL.
+2. Deposit requested — No deposit for projects over $500 = CRITICAL.
+3. Currency ambiguity — No currency stated, or "USD equivalent" = WARNING.
+4. Payment method — Asking for crypto-only, wire transfer, or "we'll figure it out" = WARNING.
+5. Budget specificity — "We'll pay whatever it takes" or no number = WARNING.
+6. Kill fee / cancellation clause — No clause = WARNING.
+7. Late payment penalty — No penalty specified = WARNING.
+
+SCOPE SIGNALS (Weight: 25%)
+8. "Unlimited" anything — unlimited revisions, unlimited calls, unlimited assets = CRITICAL.
+9. Vague deliverables — "make it pop," "we'll know it when we see it" = CRITICAL.
+10. Scope expansion language — "while you're at it," "just one more thing" = WARNING.
+11. Timeline without deadline date — "ASAP" with no specific date = WARNING.
+12. Unrealistic deadline — Less than 50% of industry-standard time = CRITICAL.
+13. Missing acceptance criteria — No definition of "done" = WARNING.
+
+RELATIONSHIP SIGNALS (Weight: 20%)
+14. Urgency pressure — "We need this by tomorrow" without prior discussion = WARNING.
+15. Multiple stakeholders unnamed — "the team will review" with no names = WARNING.
+16. Comparison pressure — "our other freelancer said..." = WARNING.
+17. Testing language — "let's do a small test" (unpaid) = CRITICAL.
+18. Equity-for-work offers — Payment in "exposure," "future revenue," or equity = CRITICAL.
+
+LEGAL SIGNALS (Weight: 20%)
+19. IP assignment breadth — "all work product and ideas" = WARNING.
+20. Non-compete scope — Prevents working with similar clients for 12+ months = WARNING.
+21. Indemnification clause — Freelancer indemnifies client for all claims = CRITICAL.
+22. Governing law — Jurisdiction in a country the freelancer isn't in = WARNING.
+
+SCORING LOGIC:
+- 0 CRITICALs and 0-2 WARNINGs → GREEN (safe to proceed)
+- 0 CRITICALs and 3+ WARNINGs → YELLOW (proceed with revised terms)
+- 1+ CRITICALs → RED (do not sign without changes)
+
+WEIGHTED SCORE (0-100):
+Start at 100. Subtract 25 per CRITICAL, 8 per WARNING.
+Below 60 = RED. 60-79 = YELLOW. 80+ = GREEN.
+"""
 def get_working_model(client):
     try:
         models = client.models.list()
