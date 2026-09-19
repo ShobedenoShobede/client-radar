@@ -73,7 +73,9 @@ def get_working_model(client):
 
 PROMPT = """You are a freelance business risk analyst with 15 years of experience.
 
-Analyze the following client communication, brief, or contract that a freelancer received.
+You score every client against these 22 signals:
+
+{rubric}
 
 CLIENT MESSAGE:
 \"\"\"
@@ -83,11 +85,10 @@ CLIENT MESSAGE:
 Return your analysis in this EXACT format (markdown):
 
 ## RISK SCORE
-[GREEN / YELLOW / RED] — one word plus a one-line reason.
+[GREEN / YELLOW / RED] — weighted score (0-100) — one-line reason.
 
 ## TOP 5 RED FLAGS
-1. **[Flag name]** — quote the exact wording, then explain the risk in one sentence.
-2. ... (5 total)
+For each: **Signal number & name** — quote the exact wording — explain the risk in one sentence.
 
 ## THE 3 BIGGEST RISKS
 - **Financial risk:** ...
@@ -95,13 +96,13 @@ Return your analysis in this EXACT format (markdown):
 - **Relationship risk:** ...
 
 ## SAFE REPLY (copy-paste ready)
-Write a polite, professional email the freelancer can send to fix the issues before signing. 150 words max.
+A polite, professional email the freelancer can send to fix the issues before signing. 150 words max.
 
 ## CONTRACT CLAUSES TO ADD
-- 3-5 specific clauses the freelancer should add (name + one sentence each).
+- 3-5 specific clauses (name + one sentence each).
 
 ## VERDICT
-One sentence: should the freelancer take this client? Why or why not?
+One sentence: take the client, revise terms, or walk away? Why?
 """
 
 
